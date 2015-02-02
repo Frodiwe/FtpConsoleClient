@@ -14,4 +14,5 @@ Available commands and arguments for them:
 	cat		Shows file content
 	dl [fn][p]	Download file fn from current directory to directory p on your computer.
 	cd [d]		Changes current directory to d (/../ to return to a higher level)
+	exit		Exit client
 	
