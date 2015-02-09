@@ -19,8 +19,8 @@ namespace ftpConsoleClient
         private FtpWebRequest request;
         private NetworkCredential credentials;
 
-        // attributes of items received from ftp LIST method (unix: ls -l)
-        // only for apache? servers, IIS returns data in other format (probably?)
+        // attributes of items received from ftp LIST method (Unix: ls -l)
+        // only for Apache? servers, IIS returns data in other format (probably?)
         private enum ItemAttributes
         {
             TypeMod = 0,
@@ -32,16 +32,6 @@ namespace ftpConsoleClient
             DayStamp = 6,
             TimeOrYearStamp = 7,
             Name = 8,
-        }
-
-        // returns created ftp request
-        private FtpWebRequest CreateFtpRequest(string method, string uri)
-        {
-            FtpWebRequest requestInstance = (FtpWebRequest)WebRequest.Create(uri);
-            requestInstance.Method = method;
-            requestInstance.Credentials = credentials;
-
-            return requestInstance;
         }
 
 

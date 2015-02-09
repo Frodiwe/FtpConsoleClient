@@ -17,6 +17,24 @@ namespace ftpConsoleClient.Methods
 
         protected FtpWebRequest request;
 
-        protected NetworkCredential credentials;
+        // Default credentials
+        protected NetworkCredential credentials = new NetworkCredential("","");
+
+        /// <summary>
+        /// Creates and initializes an instance of FtpWebRequest
+        /// </summary>
+        /// <param name="method">FTP method</param>
+        /// <param name="uri">Where we send request</param>
+        /// <returns>Instanse of FtpWebRequest</returns>
+        protected FtpWebRequest CreateFtpRequest(string method, string uri)
+        {
+            FtpWebRequest requestInstance = (FtpWebRequest)WebRequest.Create(uri);
+            requestInstance.Method = method;
+            requestInstance.Credentials = credentials;
+
+            return requestInstance;
+        }
+
+        public abstract void Invoke(params string[] consoleArgs);
     }
 }
