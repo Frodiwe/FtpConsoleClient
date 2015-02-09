@@ -7,7 +7,9 @@ using System.Net;
 
 namespace ftpConsoleClient.Methods
 {
-    // Abstract FTP method
+    /// <summary>
+    /// Abstract FTP method
+    /// </summary>
     public abstract class AbstractFtpMethod
     {
         // Default uri for all derived classes
