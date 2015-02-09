@@ -15,7 +15,7 @@ namespace ftpConsoleClient
     //  - shell for basic ftp commands
     class FtpClient
     {
-        private string ftpUri = "ftp://ftp.mozilla.org/";
+        private string ftpUri = "ftp://mozilla.org";
         private FtpWebRequest request;
         private NetworkCredential credentials;
 
