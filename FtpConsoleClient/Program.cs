@@ -31,7 +31,7 @@ namespace ftpConsoleClient
             string[] currentCommandAndArguments = currentCommand.Trim().Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
             string[] currentArguments = null;
 
-            // if command doesn't have arguments
+            // if command wasn't specified
             try
             {
                 currentCommand = currentCommandAndArguments[0];
@@ -41,6 +41,7 @@ namespace ftpConsoleClient
                 currentCommand = "";
             }
 
+            // if command doesn't have arguments
             try
             {
                 currentArguments = currentCommandAndArguments[1].Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);

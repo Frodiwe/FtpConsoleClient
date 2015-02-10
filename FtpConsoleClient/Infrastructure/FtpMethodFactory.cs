@@ -19,7 +19,7 @@ namespace ftpConsoleClient.Infrastructure
 
         /// <summary>
         /// Adds new class inherited from AbstractFtpMethod to factory storage
-        ///     by FtpMethodCreater - implementation of AbstractFtpMethodCreator.
+        /// by FtpMethodCreater - implementation of AbstractFtpMethodCreator.
         /// </summary>
         /// <typeparam name="T">Name of class we add to storage</typeparam>
         /// <param name="alias">Alias of this class to add in associative array (read: factory storage)</param>

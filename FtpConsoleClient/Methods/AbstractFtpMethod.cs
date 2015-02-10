@@ -24,9 +24,9 @@ namespace ftpConsoleClient.Methods
         /// Creates and initializes an instance of FtpWebRequest
         /// </summary>
         /// <param name="method">FTP method</param>
-        /// <param name="uri">Where we send request</param>
+        /// <param name="uri">Uri to send request</param>
         /// <returns>Instanse of FtpWebRequest</returns>
-        protected FtpWebRequest CreateFtpRequest(string method, string uri)
+        protected FtpWebRequest CreateFtpRequest(string method, Uri uri)
         {
             FtpWebRequest requestInstance = (FtpWebRequest)WebRequest.Create(uri);
             requestInstance.Method = method;
