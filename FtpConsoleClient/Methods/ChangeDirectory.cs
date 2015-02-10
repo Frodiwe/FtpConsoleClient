@@ -9,7 +9,7 @@ using System.IO;
 namespace ftpConsoleClient.Methods
 {
     /// <summary>
-    /// Implemets FTP CHD method
+    /// Provides FTP CHD method
     /// </summary>
     public class ChangeDirectory : AbstractFtpMethod
     {
