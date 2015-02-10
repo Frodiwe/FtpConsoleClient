@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ftpConsoleClient.Methods
 {
@@ -14,9 +15,9 @@ namespace ftpConsoleClient.Methods
     public class ChangeDirectory : AbstractFtpMethod
     {
         /// <summary>
-        /// Send FTP CHD request
+        /// Changes directory to specified one on server
         /// </summary>
-        /// <param name="consoleArgs">Path to directory to follow</param>
+        /// <param name="consoleArgs">Path to directory to move</param>
         public override void SendRequest(params string[] consoleArgs)
         {
             if (consoleArgs.Length != 1)
@@ -25,16 +26,11 @@ namespace ftpConsoleClient.Methods
                 return;
             }
 
-            request = CreateFtpRequest(WebRequestMethods.Ftp.PrintWorkingDirectory, ftpUri + consoleArgs[0]);
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-            {
-                /*if (ftpUri[ftpUri  - 1] != '/' && consoleArgs[0][0] != '/')
-                {
-                    Console.Write("Wrong path!\n\n");
-                    return;
-                }*/
-                ftpUri = response.ResponseUri;
-            }
+            Regex uriValidation = new Regex("([^\\?#]*)");
+            if (uriValidation.IsMatch(consoleArgs[0]))
+                ftpUri = new Uri(ftpUri, consoleArgs[0]);
+            else
+                Console.WriteLine("Wrong path!");
         }
     }
 }
