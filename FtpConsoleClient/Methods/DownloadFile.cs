@@ -20,7 +20,7 @@ namespace ftpConsoleClient.Methods
         /// If method is gotten 1 param it invokes Show private method
         /// </summary>
         /// <param name="consoleArgs">Filename and path to save or only filename</param>
-        public void SendRequest(params string[] consoleArgs)
+        public override void SendRequest(params string[] consoleArgs)
         {
             if (0 == consoleArgs.Length)
             {

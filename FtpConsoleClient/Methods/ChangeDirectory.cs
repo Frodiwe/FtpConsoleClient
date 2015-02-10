@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace ftpConsoleClient.Methods
 {
@@ -26,8 +25,8 @@ namespace ftpConsoleClient.Methods
                 return;
             }
 
-            Regex uriValidation = new Regex("([^\\?#]*)");
-            if (uriValidation.IsMatch(consoleArgs[0]))
+            // If first letter of path is '/' then constructor of Uri class will create uri where hostname is our path (like ftp://path)
+            if (consoleArgs[0][0] != '/')
                 ftpUri = new Uri(ftpUri, consoleArgs[0]);
             else
                 Console.WriteLine("Wrong path!");
