@@ -23,7 +23,7 @@ namespace ftpConsoleClient.Infrastructure
         /// </summary>
         /// <typeparam name="T">Name of class we add to storage</typeparam>
         /// <param name="alias">Alias of this class to add in associative array (read: factory storage)</param>
-        public void Add<T>(string alias) where T : AbstractFtpMethod, new()
+        public void Register<T>(string alias) where T : AbstractFtpMethod, new()
         {
             if (!factoryStorage.ContainsKey(alias))
                 factoryStorage.Add(alias, new FtpMethodCreator<T>());
@@ -34,7 +34,7 @@ namespace ftpConsoleClient.Infrastructure
         /// </summary>
         /// <param name="alias">Alias we use to create needed class</param>
         /// <returns>Implementation of class with this alias</returns>
-        public AbstractFtpMethod Create(string alias)
+        public AbstractFtpMethod GetInstance(string alias)
         {
             if (factoryStorage.ContainsKey(alias))
                 return factoryStorage[alias].Create();
