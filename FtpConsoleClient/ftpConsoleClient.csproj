@@ -47,6 +47,7 @@
     <Compile Include="Infrastructure\FtpMethodFactory.cs" />
     <Compile Include="Methods\AbstractFtpMethod.cs" />
     <Compile Include="Methods\ChangeDirectory.cs" />
+    <Compile Include="Methods\DownloadFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
