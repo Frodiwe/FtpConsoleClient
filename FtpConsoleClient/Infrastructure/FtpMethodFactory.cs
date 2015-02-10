@@ -15,7 +15,7 @@ namespace ftpConsoleClient.Infrastructure
         /// <value name="factoryStorage">
         /// Storage of all factory products (read: classes)
         /// </value>       
-        protected Dictionary<string, AbstractFtpMethodCreator> factoryStorage;
+        protected Dictionary<string, AbstractFtpMethodCreator> factoryStorage = new Dictionary<string,AbstractFtpMethodCreator>();
 
         /// <summary>
         /// Adds new class inherited from AbstractFtpMethod to factory storage

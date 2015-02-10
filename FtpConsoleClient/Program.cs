@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Net;
-using System.Text.RegularExpressions;
+using ftpConsoleClient.Infrastructure;
+using ftpConsoleClient.Methods;
 
 namespace ftpConsoleClient
 {
@@ -17,15 +18,20 @@ namespace ftpConsoleClient
         static Dictionary<string, Command> commands;
 
         // add new command in dictionary
-        static void DefineOperation(string cmd, Command body)
+        static void DefineOperation(string cmd, FtpMethodFactory factory)
         {
+            // Define abstract ftp method
+            // And add function to dictionary implements abstract ftp method
+            // with concrete ftp method from methods factory
+            AbstractFtpMethod method = factory.GetInstance(cmd);
+
             // if command already exists then throws exception
             if (commands.ContainsKey(cmd))
                 throw new ArgumentException(string.Format("Operation {0} already exists", cmd), "op");
-            commands.Add(cmd, body);
+            commands.Add(cmd, method.SendRequest);
         }
 
-        static string[] ParseArguments(string currentCommand)
+        static string[] ParseArguments(ref string currentCommand)
         {
             // separate command arguments
             string[] currentCommandAndArguments = currentCommand.Trim().Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -66,19 +72,32 @@ namespace ftpConsoleClient
             Console.Write("Enter password: ");
             password = Console.ReadLine();
 
-            FtpClient ftpClient = new FtpClient(uri, username, password);
+            if (uri != "")
+                AbstractFtpMethod.FtpUri = new Uri(uri);
+            AbstractFtpMethod.Reloggin(username, password);
 
-            // filling dictionary with commands
-            // first param is key=command, second param is func which processes this command
+            // Creating factory of ftp methods
+            FtpMethodFactory factory = new FtpMethodFactory();
+
+            // Register all implemented ftp methods
+            factory.Register<DirectoryList>("ls");
+            factory.Register<DownloadFile>("dl");
+            factory.Register<ChangeDirectory>("cd");
+
+            // Filling dictionary with commands
+            // First param is key=command, second param is func which processes this command
+            // Dictionary consists of delegate to provide flexibility. You can pass both simple
+            // one-line method like 'exit' and whole method of some class.
             commands = new Dictionary<string, Command>
             {
-                { "help", ftpClient.GetCommandsHelp },
                 { "exit", (dummy) => Environment.Exit(0) },
             };
-            DefineOperation("ls", ftpClient.GetListDerictory);
-            DefineOperation("cat", ftpClient.DownloadAndShowFile);
-            DefineOperation("dl", ftpClient.DownloadAndSafeFile);
-            DefineOperation("cd", ftpClient.ChangeDirectory);
+
+            string[] aliases = new string[] { "ls", "dl", "cd" };
+
+            // Add aliases and its fucntions to commands dictionary
+            foreach (string alias in aliases)
+                DefineOperation(alias, factory);
 
             Console.WriteLine();
             commands["ls"]();
@@ -87,10 +106,10 @@ namespace ftpConsoleClient
             // processes commands until 'exit' found
             do
             {
-                Console.Write("{0}>", ftpClient.FtpUri);
+                Console.Write("{0}>", AbstractFtpMethod.FtpUri);
                 currentCommand = Console.ReadLine();
 
-                string[] currentArguments = ParseArguments(currentCommand);
+                string[] currentArguments = ParseArguments(ref currentCommand);
 
                 // calls the appropriate func 
                 if (commands.ContainsKey(currentCommand))

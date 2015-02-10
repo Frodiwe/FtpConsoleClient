@@ -13,21 +13,28 @@ namespace ftpConsoleClient.Methods
     public abstract class AbstractFtpMethod
     {
         // Default uri for all derived classes
-        protected Uri ftpUri = new Uri("ftp://mozilla.org");
+        static protected Uri ftpUri = new Uri("ftp://ftp.mozilla.org/");
 
         // Request used in all derived classes to send request to server
         protected FtpWebRequest request;
 
         // Default credentials
-        protected NetworkCredential credentials = new NetworkCredential("","");
+        static protected NetworkCredential credentials = new NetworkCredential("","");
 
         /// <value>
         /// Simple smart field for ftpUri
         /// </value>
-        public Uri FtpUri
+        static public Uri FtpUri
         {
             get { return ftpUri; }
-            set { ftpUri = value; }
+            set 
+            {
+                if (value.Scheme != "ftp")
+                {
+                    UriBuilder uriBuilder = new UriBuilder(Uri.UriSchemeFtp, value.ToString());
+                    ftpUri = uriBuilder.Uri;
+                }
+            }
         }
 
         /// <summary>
@@ -35,7 +42,7 @@ namespace ftpConsoleClient.Methods
         /// </summary>
         /// <param name="username">New username</param>
         /// <param name="password">Password to this username</param>
-        public void Reloggin(string username, string password)
+        static public void Reloggin(string username, string password)
         {
             credentials.UserName = username;
             credentials.Password = password;
