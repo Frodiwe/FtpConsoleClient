@@ -49,7 +49,7 @@ namespace ftpConsoleClient.Methods
             }
             catch (System.Net.WebException e)
             {
-                Console.Write("Error: The remote name ftp://{0} couldn't be resolved\nShow full message? (y/n) ", ftpUri);
+                Console.Write("Error: The remote name {0} couldn't be resolved\nShow full message? (y/n) ", ftpUri);
 
                 if ('y' == (char)Console.Read()) Console.Write("{0}\n", e);
 

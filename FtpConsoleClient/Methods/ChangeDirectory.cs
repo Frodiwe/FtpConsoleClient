@@ -25,11 +25,17 @@ namespace ftpConsoleClient.Methods
                 return;
             }
 
-            // If first letter of path is '/' then constructor of Uri class will create uri where hostname is our path (like ftp://path)
-            if (consoleArgs[0][0] != '/')
-                ftpUri = new Uri(ftpUri, consoleArgs[0]);
-            else
-                Console.WriteLine("Wrong path!");
+            // Adds '/' in the end of string if it hasn't this one yet for correct joining ftpUri and string by Uri constructor 
+            string path = consoleArgs[0];
+            path += consoleArgs[0][consoleArgs[0].Length - 1] == '/' ? "" : "/";
+
+            // Remove all UNACCEPTABLE!!1!! charcters ('\', '/') from beginning of the path
+            while ((path != "") && ((path[0] == '/') || (path[0].ToString() == "\\")))
+                path = path.Substring(1);
+
+            // If path is empty leave ftpUri as it is
+            if (path != "")
+                ftpUri = new Uri(ftpUri, path);
         }
     }
 }
