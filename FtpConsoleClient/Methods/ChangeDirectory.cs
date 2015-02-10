@@ -33,9 +33,31 @@ namespace ftpConsoleClient.Methods
             while ((path != "") && ((path[0] == '/') || (path[0].ToString() == "\\")))
                 path = path.Substring(1);
 
-            // If path is empty leave ftpUri as it is
-            if (path != "")
-                ftpUri = new Uri(ftpUri, path);
+            // If path is empty then ftpUri doesn't have to change
+            if ("" == path)
+                return;
+
+            Uri temporaryUri = new Uri(ftpUri, path);
+
+            request = CreateFtpRequest(WebRequestMethods.Ftp.ListDirectoryDetails, temporaryUri);
+            
+            FtpWebResponse response = null;
+            try
+            {
+                response = (FtpWebResponse)request.GetResponse();
+            }
+            catch(System.Net.WebException)
+            {
+                Console.Write("Specified directory doesn't exists!\n\n");
+                return;
+            }
+            finally
+            {
+                if (response != null)
+                    response.Close();
+            }
+
+            ftpUri = temporaryUri;
         }
     }
 }

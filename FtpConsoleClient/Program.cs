@@ -24,7 +24,11 @@ namespace ftpConsoleClient
         /// </summary>
         static Dictionary<string, Command> commands;
 
-        // add new command in dictionary
+        /// <summary>
+        /// Вуаштуы
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="factory"></param>
         static void DefineOperation(string cmd, FtpMethodFactory factory)
         {
             // Define abstract ftp method
@@ -79,7 +83,7 @@ namespace ftpConsoleClient
             password = Console.ReadLine();
 
             if (uri != "")
-                AbstractFtpMethod.FtpUri = new Uri(uri);
+                AbstractFtpMethod.FtpUri = new Uri(uri, UriKind.RelativeOrAbsolute);
             AbstractFtpMethod.Reloggin(username, password);
         }
 
@@ -92,7 +96,7 @@ namespace ftpConsoleClient
             // Creating factory of ftp methods
             FtpMethodFactory factory = new FtpMethodFactory();
 
-            // Register all implemented ftp methods
+            // Registers all implemented ftp methods
             factory.Register<DirectoryList>("ls");
             factory.Register<DownloadFile>("dl");
             factory.Register<ChangeDirectory>("cd");
@@ -124,7 +128,7 @@ namespace ftpConsoleClient
             // And by shell-method DefineOperation
             string[] aliases = new string[] { "ls", "dl", "cd" };
 
-            // Add aliases and its appropriate fucntions to commands dictionary
+            // Adds aliases and its appropriate fucntions to commands dictionary
             foreach (string alias in aliases)
                 DefineOperation(alias, factory);
 
@@ -138,6 +142,7 @@ namespace ftpConsoleClient
                 Console.Write("{0}>", AbstractFtpMethod.FtpUri);
                 currentCommand = Console.ReadLine();
 
+                // Splt arguments to get them into function
                 string[] currentArguments = ParseArguments(ref currentCommand);
 
                 // Invokes the appropriate func 

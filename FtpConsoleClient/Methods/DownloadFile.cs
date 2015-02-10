@@ -68,6 +68,8 @@ namespace ftpConsoleClient.Methods
                 if ('y' == (char)Console.Read()) Console.Write("{0}\n", e);
 
                 Console.WriteLine();
+                Console.ReadLine();
+
                 return;
             }
 
@@ -120,6 +122,8 @@ namespace ftpConsoleClient.Methods
                 if ('y' == (char)Console.Read()) Console.Write("{0}\n", e);
 
                 Console.WriteLine();
+                Console.ReadLine();
+
                 return;
             }
 

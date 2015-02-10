@@ -15,8 +15,10 @@ namespace ftpConsoleClient.Methods
     {
         /// <summary>
         /// Attributes of items received from ftp LIST method (Unix: ls -l).
-        /// Only for Apache? servers, IIS returns data in other format (probably?)
         /// </summary>
+        /// <remarks>
+        /// Only for Apache? servers, IIS returns data in other format (probably?)
+        /// </remarks>
         private enum ItemAttributes
         {
             TypeMod = 0,
@@ -28,6 +30,34 @@ namespace ftpConsoleClient.Methods
             DayStamp = 6,
             TimeOrYearStamp = 7,
             Name = 8,
+        }
+
+        /// <summary>
+        /// Captions to ItemAttributes
+        /// </summary>
+        private Dictionary<ItemAttributes, string> captionToItemAttributes = new Dictionary<ItemAttributes, string>
+        {
+            { ItemAttributes.DayStamp, "Day" },
+            { ItemAttributes.MonthStamp, "Month" },
+            { ItemAttributes.GroupName, "Groupname" },
+            { ItemAttributes.Name, "Name" },
+            { ItemAttributes.OwnerName, "Owner's name" },
+            { ItemAttributes.RefCount, "Count of refs" },
+            { ItemAttributes.Size, "Size" },
+            { ItemAttributes.TimeOrYearStamp, "Time\\Year" },
+            { ItemAttributes.TypeMod, "Mod" },
+        };
+
+        /// <summary>
+        /// Extra function to display caption for attributes
+        /// </summary>
+        /// <param name="keys">List of attributes which caption to display</param>
+        private void PrintCaptionTo(params ItemAttributes[] keys)
+        {
+            if (0 == keys.Length)
+                return;
+            for (int keyIndex = 0; keyIndex < keys.Length; keyIndex++)
+                Console.Write("{0}\t", captionToItemAttributes[keys[keyIndex]]);
         }
 
         /// <summary>
@@ -49,11 +79,18 @@ namespace ftpConsoleClient.Methods
             }
             catch (System.Net.WebException e)
             {
+                // There's odd thing happens when exceptions raises and displays: next function reading from output stream
+                // doesn't read... anything, just passes by. 
                 Console.Write("Error: The remote name {0} couldn't be resolved\nShow full message? (y/n) ", ftpUri);
 
-                if ('y' == (char)Console.Read()) Console.Write("{0}\n", e);
+                if ('y' == (char)Console.Read())
+                    // This oddity happens here
+                    Console.Write("{0}\n", e.ToString());
 
                 Console.WriteLine();
+                // I decided to add this line to fix the problem above
+                Console.ReadLine();
+
                 return;
             }
 
@@ -63,14 +100,14 @@ namespace ftpConsoleClient.Methods
                 {
                     using (StreamReader reader = new StreamReader(responseStream))
                     {
-                        // dictionary for this func keys
+                        // Dictionary for func's keys
                         Dictionary<string, ItemAttributes> arguments = new Dictionary<string, ItemAttributes>();
-                        // separate response to lines
+                        // Separates response to lines
                         string[] directoryItemsNotSeparated = reader.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                        // then separate lines on items and place into a string array
+                        // Then separate lines on items and place into a string array
                         string[,] directoryItems = new string[directoryItemsNotSeparated.Length, 9];
 
-                        // add keys to dictionary
+                        // Adds keys to dictionary
                         arguments.Add("-ds", ItemAttributes.DayStamp);
                         arguments.Add("-ms", ItemAttributes.MonthStamp);
                         arguments.Add("-gn", ItemAttributes.GroupName);
@@ -81,36 +118,45 @@ namespace ftpConsoleClient.Methods
                         arguments.Add("-tys", ItemAttributes.TimeOrYearStamp);
                         arguments.Add("-tm", ItemAttributes.TypeMod);
 
-                        // finally separate items on attributes
-                        for (int i = 0; i < directoryItems.GetLength(0); i++)
+                        // Finally separate items to attributes
+                        for (int itemIndex = 0; itemIndex < directoryItems.GetLength(0); itemIndex++)
                         {
-                            int j = 0;
-                            string[] directoryItem = directoryItemsNotSeparated[i].Split(new char[] { ' ' }, 9, StringSplitOptions.RemoveEmptyEntries);
+                            int attributeIndex = 0;
+                            string[] directoryItem = directoryItemsNotSeparated[itemIndex].Split(new char[] { ' ' }, 9, StringSplitOptions.RemoveEmptyEntries);
                             foreach (string attribute in directoryItem)
-                                directoryItems[i, j++] = attribute;
+                                directoryItems[itemIndex, attributeIndex++] = attribute;
                         }
 
-                        // display specified attributes
+                        // Display specified attributes
+                        // If attributes are not specified show default scheme
                         if (0 == consoleArgs.Length || (1 == consoleArgs.Length && !arguments.ContainsKey(consoleArgs[0])))
                         {
                             Console.Write("Last modified\tSize\tName\n\n");
-                            for (int i = 0; i < directoryItems.GetLength(0); i++)
+                            for (int itemIndex = 0; itemIndex < directoryItems.GetLength(0); itemIndex++)
                             {
-                                Console.Write("{0} {1} {2}\t{3}\t{4}", directoryItems[i, (int)ItemAttributes.DayStamp],
-                                                                       directoryItems[i, (int)ItemAttributes.MonthStamp],
-                                                                       directoryItems[i, (int)ItemAttributes.TimeOrYearStamp],
-                                                                       directoryItems[i, (int)ItemAttributes.Size],
-                                                                       directoryItems[i, (int)ItemAttributes.Name]);
-                                Console.WriteLine(directoryItems[i, (int)ItemAttributes.TypeMod][0] == '-' ? "" : "/");
+                                Console.Write("{0} {1} {2}\t{3}\t{4}", directoryItems[itemIndex, (int)ItemAttributes.DayStamp],
+                                                                       directoryItems[itemIndex, (int)ItemAttributes.MonthStamp],
+                                                                       directoryItems[itemIndex, (int)ItemAttributes.TimeOrYearStamp],
+                                                                       directoryItems[itemIndex, (int)ItemAttributes.Size],
+                                                                       directoryItems[itemIndex, (int)ItemAttributes.Name]);
+                                Console.WriteLine(directoryItems[itemIndex, (int)ItemAttributes.TypeMod][0] == '-' ? "" : "/");
                             }
                         }
                         else
                         {
-                            for (int i = 0; i < directoryItems.GetLength(0); i++)
+                            // Displays caption
+                            for (int argumentIndex = 0; argumentIndex < consoleArgs.Length; argumentIndex++)
+                                if (arguments.ContainsKey(consoleArgs[argumentIndex]))
+                                    PrintCaptionTo(arguments[consoleArgs[argumentIndex]]);
+
+                            Console.WriteLine();
+
+                            // Displays selected attributes
+                            for (int itemIndex = 0; itemIndex < directoryItems.GetLength(0); itemIndex++)
                             {
-                                for (int j = 0; j < consoleArgs.Length; j++)
-                                    if (arguments.ContainsKey(consoleArgs[j]))
-                                        Console.Write("{0}\t", directoryItems[i, (int)arguments[consoleArgs[j]]]);
+                                for (int argumentIndex = 0; argumentIndex < consoleArgs.Length; argumentIndex++)
+                                    if (arguments.ContainsKey(consoleArgs[argumentIndex]))
+                                        Console.Write("{0}\t", directoryItems[itemIndex, (int)arguments[consoleArgs[argumentIndex]]]);
                                 Console.WriteLine();
                             }
                         }

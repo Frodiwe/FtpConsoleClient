@@ -29,7 +29,7 @@ namespace ftpConsoleClient.Methods
             get { return ftpUri; }
             set 
             {
-                if (value.Scheme != "ftp")
+                if (!value.IsAbsoluteUri)
                 {
                     UriBuilder uriBuilder = new UriBuilder(Uri.UriSchemeFtp, value.ToString());
                     ftpUri = uriBuilder.Uri;
