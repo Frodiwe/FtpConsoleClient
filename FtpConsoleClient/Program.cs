@@ -25,6 +25,34 @@ namespace ftpConsoleClient
             commands.Add(cmd, body);
         }
 
+        static string[] ParseArguments(string currentCommand)
+        {
+            // separate command arguments
+            string[] currentCommandAndArguments = currentCommand.Trim().Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            string[] currentArguments = null;
+
+            // if command doesn't have arguments
+            try
+            {
+                currentCommand = currentCommandAndArguments[0];
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                currentCommand = "";
+            }
+
+            try
+            {
+                currentArguments = currentCommandAndArguments[1].Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                currentArguments = new string[0];
+            }
+
+            return currentArguments;
+        }
+
         static void Main(string[] args)
         {
             string uri, username, password;
@@ -61,28 +89,7 @@ namespace ftpConsoleClient
                 Console.Write("{0}>", ftpClient.FtpUri);
                 currentCommand = Console.ReadLine();
 
-                // separate command arguments
-                string[] currentCommandAndArguments = currentCommand.Trim().Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
-                string[] currentArguments = null;
-
-                // if command doesn't have arguments
-                try
-                {
-                    currentCommand = currentCommandAndArguments[0];
-                }
-                catch (System.IndexOutOfRangeException)
-                {
-                    currentCommand = "";
-                }
-
-                try
-                {
-                    currentArguments = currentCommandAndArguments[1].Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                }
-                catch (System.IndexOutOfRangeException)
-                {
-                    currentArguments = new string[0];
-                }
+                string[] currentArguments = ParseArguments(currentCommand);
 
                 // calls the appropriate func 
                 if (commands.ContainsKey(currentCommand))

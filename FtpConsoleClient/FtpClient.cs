@@ -61,28 +61,6 @@ namespace ftpConsoleClient
             credentials.Password = password;
         }
 
-        // all methods take variable length of params, but these params
-        //  are some attributes or keys for this function
-        public void ChangeDirectory(params string[] consoleArgs)
-        {
-            // this func takes 1 param only
-            if (consoleArgs.Length != 1)
-            {
-                Console.WriteLine("You must specify directory you want to move!");
-                return;
-            }
-
-            request = CreateFtpRequest(WebRequestMethods.Ftp.PrintWorkingDirectory, ftpUri + consoleArgs[0]);
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-            {
-                if (ftpUri[ftpUri.Length - 1] != '/' && consoleArgs[0][0] != '/')
-                {
-                    Console.Write("Wrong path!\n\n");
-                    return;
-                }
-                ftpUri = response.ResponseUri.ToString();
-            }
-        }
 
         public void DownloadAndSafeFile(string[] consoleArgs)
         {

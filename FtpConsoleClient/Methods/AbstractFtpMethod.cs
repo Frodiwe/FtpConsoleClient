@@ -35,6 +35,6 @@ namespace ftpConsoleClient.Methods
             return requestInstance;
         }
 
-        public abstract void Invoke(params string[] consoleArgs);
+        public abstract void SendRequest(params string[] consoleArgs);
     }
 }
