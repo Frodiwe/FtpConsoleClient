@@ -15,10 +15,31 @@ namespace ftpConsoleClient.Methods
         // Default uri for all derived classes
         protected Uri ftpUri = new Uri("ftp://mozilla.org");
 
+        // Request used in all derived classes to send request to server
         protected FtpWebRequest request;
 
         // Default credentials
         protected NetworkCredential credentials = new NetworkCredential("","");
+
+        /// <value>
+        /// Simple smart field for ftpUri
+        /// </value>
+        public Uri FtpUri
+        {
+            get { return ftpUri; }
+            set { ftpUri = value; }
+        }
+
+        /// <summary>
+        /// Method to reauthorize in the ftp server
+        /// </summary>
+        /// <param name="username">New username</param>
+        /// <param name="password">Password to this username</param>
+        public void Reloggin(string username, string password)
+        {
+            credentials.UserName = username;
+            credentials.Password = password;
+        }
 
         /// <summary>
         /// Creates and initializes an instance of FtpWebRequest
@@ -35,6 +56,10 @@ namespace ftpConsoleClient.Methods
             return requestInstance;
         }
 
+        /// <summary>
+        /// Method which sends request to server and processes the response
+        /// </summary>
+        /// <param name="consoleArgs">Any arguments from console required in the request</param>
         public abstract void SendRequest(params string[] consoleArgs);
     }
 }

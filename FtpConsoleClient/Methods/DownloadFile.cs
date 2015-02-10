@@ -10,7 +10,7 @@ namespace ftpConsoleClient.Methods
 {
     /// <summary>
     /// This class provides FTP RETR method in 2 implementations:
-    ///     default (downloads and shows file) and with saving downloaded file
+    /// default (downloads and shows file) and with saving downloaded file
     /// </summary>
     public class DownloadFile : AbstractFtpMethod
     {
