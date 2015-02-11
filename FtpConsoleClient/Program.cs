@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using ftpConsoleClient.Infrastructure;
 using ftpConsoleClient.Methods;
+using ftpConsoleClient.Extra;
 
 namespace ftpConsoleClient
 {
@@ -42,54 +43,9 @@ namespace ftpConsoleClient
             commands.Add(cmd, method.SendRequest);
         }
 
-        static string[] ParseArguments(ref string currentCommand)
-        {
-            // Separate command arguments
-            string[] currentCommandAndArguments = currentCommand.Trim().Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
-            string[] currentArguments = null;
-
-            // If command wasn't specified
-            try
-            {
-                currentCommand = currentCommandAndArguments[0];
-            }
-            catch (System.IndexOutOfRangeException)
-            {
-                currentCommand = "";
-            }
-
-            // If command doesn't have arguments
-            try
-            {
-                currentArguments = currentCommandAndArguments[1].Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            }
-            catch (System.IndexOutOfRangeException)
-            {
-                currentArguments = new string[0];
-            }
-
-            return currentArguments;
-        }
-
-        static void WelcomeMessageAndInitParameters()
-        {
-            string uri, username, password;
-
-            Console.Write("Welcome to console ftp client!\n\nEnter ftp server you want to use (without ftp://) (ftp.mozilla.org as default): ");
-            uri = Console.ReadLine();
-            Console.Write("Enter username: ");
-            username = Console.ReadLine();
-            Console.Write("Enter password: ");
-            password = Console.ReadLine();
-
-            if (uri != "")
-                AbstractFtpMethod.FtpUri = new Uri(uri, UriKind.RelativeOrAbsolute);
-            AbstractFtpMethod.Reloggin(username, password);
-        }
-
         static void Main(string[] args)
         {
-            WelcomeMessageAndInitParameters();
+            Accessory.WelcomeMessageAndInitParameters();
 
             string currentCommand;
 
@@ -143,7 +99,7 @@ namespace ftpConsoleClient
                 currentCommand = Console.ReadLine();
 
                 // Splt arguments to get them into function
-                string[] currentArguments = ParseArguments(ref currentCommand);
+                string[] currentArguments = Accessory.ParseArguments(ref currentCommand);
 
                 // Invokes the appropriate func 
                 if (commands.ContainsKey(currentCommand))

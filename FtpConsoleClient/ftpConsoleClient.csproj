@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FtpClient.cs" />
+    <Compile Include="Extra\Accessory.cs" />
     <Compile Include="Infrastructure\AbstractFtpMethodCreator.cs" />
     <Compile Include="Infrastructure\FtpMethodCreator.cs" />
     <Compile Include="Infrastructure\FtpMethodFactory.cs" />
